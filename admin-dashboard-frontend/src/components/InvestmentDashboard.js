@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './AdminDashboard.css'; // Import the CSS file
+import './InvestmentDashboard.css'; // Import the CSS file
 
 function InvestmentDashboard() {
     const [investments, setInvestments] = useState([]);
@@ -41,7 +41,6 @@ function InvestmentDashboard() {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Validate amount field
         if (!formData.amount || isNaN(formData.amount)) {
             alert('Amount is required and must be a number.');
             return;
@@ -52,9 +51,9 @@ function InvestmentDashboard() {
                 investorID: formData.investorID,
                 projectID: formData.projectID,
                 amount: formData.amount,
-                investedDate: new Date(formData.investedDate).toISOString().split('T')[0], // Format date as YYYY-MM-DD
+                investedDate: new Date(formData.investedDate).toISOString().split('T')[0],
                 profitOrLoss: formData.profitOrLoss,
-                media: mediaFile ? mediaFile.name : null, // Include media file name
+                media: mediaFile ? mediaFile.name : null,
             };
     
             let investmentResponse;
@@ -73,10 +72,7 @@ function InvestmentDashboard() {
                 await axios.post(`http://localhost:5000/investment/${investment.investmentid}/media`, formData);
             }
     
-            // Refresh the investments list after adding/updating
             fetchInvestments();
-    
-    
         } catch (error) {
             console.error('There was an error submitting the investment!', error);
         }
@@ -105,17 +101,8 @@ function InvestmentDashboard() {
     };
 
     return (
-        <div>
+        <div className="dashboard-content">
             <h1>Investment Dashboard</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="number" name="investorID" placeholder="Investor ID" value={formData.investorID} onChange={handleInputChange} required />
-                <input type="number" name="projectID" placeholder="Project ID" value={formData.projectID} onChange={handleInputChange} required />
-                <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleInputChange} required />
-                <input type="date" name="investedDate" placeholder="Invested Date" value={formData.investedDate} onChange={handleInputChange} required />
-                <input type="text" name="profitOrLoss" placeholder="Profit or Loss" value={formData.profitOrLoss} onChange={handleInputChange} />
-                <input type="file" name="media" onChange={handleMediaChange} />
-                <button type="submit">{editMode ? 'Update Investment' : 'Add Investment'}</button>
-            </form>
             <table>
                 <thead>
                     <tr>
@@ -140,17 +127,30 @@ function InvestmentDashboard() {
                                 {investment.media ? (
                                     <img src={`http://localhost:5000/uploads/${investment.media}`} alt="Investment Media" width="100" />
                                 ) : (
-                                    <span>No Media</span>
+                                    <span>No Media 1</span>
                                 )}
                             </td>
                             <td>
-                                <button onClick={() => handleEdit(investment)}>Edit</button>
-                                <button onClick={() => handleDelete(investment.investmentid)}>Delete</button>
+                                <button className="edit-button" onClick={() => handleEdit(investment)}>Edit</button>
+                                <button className="delete-button" onClick={() => handleDelete(investment.investmentid)}>Delete</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <h2>{editMode ? 'Edit Investment' : 'Add New Investment'}</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="number" name="investorID" placeholder="Investor ID" value={formData.investorID} onChange={handleInputChange} required />
+                <input type="number" name="projectID" placeholder="Project ID" value={formData.projectID} onChange={handleInputChange} required />
+                <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleInputChange} required />
+                <input type="date" name="investedDate" placeholder="Invested Date" value={formData.investedDate} onChange={handleInputChange} required />
+                <input type="text" name="profitOrLoss" placeholder="Profit or Loss" value={formData.profitOrLoss} onChange={handleInputChange} />
+                <input type="file" name="media" onChange={handleMediaChange} />
+                <button className={editMode ? "edit-button" : "add-button"} type="submit">
+                    {editMode ? 'Update Investment' : 'Add Investment'}
+                </button>
+            </form>
         </div>
     );
 }

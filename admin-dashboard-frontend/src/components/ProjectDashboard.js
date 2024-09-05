@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './AdminDashboard.css'; // Import the CSS file
+import './AdminDashboard.css';  // Assuming you want to reuse the same styles as Admin Dashboard
 
 function ProjectDashboard() {
     const [projects, setProjects] = useState([]);
@@ -84,8 +84,39 @@ function ProjectDashboard() {
     };
 
     return (
-        <div>
+        <div className="dashboard-content">
             <h1>Project Dashboard</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Admin ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Target Amount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {projects.map(project => (
+                        <tr key={project.projectid}>
+                            <td>{project.adminid}</td>
+                            <td>{project.title}</td>
+                            <td>{project.description}</td>
+                            <td>{project.targetamount}</td>
+                            <td>{new Date(project.startdate).toLocaleDateString()}</td>
+                            <td>{new Date(project.enddate).toLocaleDateString()}</td>
+                            <td>
+                                <button className="edit-button" onClick={() => handleEdit(project)}>Edit</button>
+                                <button className="delete-button" onClick={() => handleDelete(project.projectid)}>Delete</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2>{editMode ? 'Edit Project' : 'Add New Project'}</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="number"
@@ -108,7 +139,6 @@ function ProjectDashboard() {
                     name="description"
                     placeholder="Description"
                     value={formData.description}
-                    onChange={handleInputChange}
                 />
                 <input
                     type="number"
@@ -134,39 +164,13 @@ function ProjectDashboard() {
                     onChange={handleInputChange}
                     required
                 />
-                <button type="submit">
+                <button type="submit" className={editMode ? "edit-button" : "add-button"}>
                     {editMode ? 'Update Project' : 'Add Project'}
                 </button>
+                {editMode && (
+                    <button className="cancel-button" onClick={() => setEditMode(false)}>Cancel</button>
+                )}
             </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Admin ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Target Amount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {projects.map(project => (
-                        <tr key={project.projectid}>
-                            <td>{project.adminid}</td>
-                            <td>{project.title}</td>
-                            <td>{project.description}</td>
-                            <td>{project.targetamount}</td>
-                            <td>{new Date(project.startdate).toLocaleDateString()}</td>
-                            <td>{new Date(project.enddate).toLocaleDateString()}</td>
-                            <td>
-                                <button onClick={() => handleEdit(project)}>Edit</button>
-                                <button onClick={() => handleDelete(project.projectid)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
         </div>
     );
 }

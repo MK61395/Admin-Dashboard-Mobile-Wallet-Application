@@ -54,7 +54,7 @@ function AdminDashboard() {
     };
 
     return (
-        <div>
+        <div className="dashboard-content">
             <h1>Admin Dashboard</h1>
             <table>
                 <thead>
@@ -72,8 +72,8 @@ function AdminDashboard() {
                             <td>{admin.email}</td>
                             <td>{admin.password}</td>
                             <td>
-                                <button onClick={() => setEditingAdmin(admin)}>Edit</button>
-                                <button onClick={() => deleteAdmin(admin.adminid)}>Delete</button>
+                                <button className="edit-button" onClick={() => setEditingAdmin(admin)}>Edit</button>
+                                <button className="delete-button" onClick={() => deleteAdmin(admin.adminid)}>Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -99,7 +99,7 @@ function AdminDashboard() {
                 value={newAdmin.password}
                 onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
             />
-            <button onClick={addAdmin}>Add Admin</button>
+            <button className="add-button" onClick={addAdmin}>Add Admin</button>
 
             {editingAdmin && (
                 <div>
@@ -119,8 +119,8 @@ function AdminDashboard() {
                         value={editingAdmin.password}
                         onChange={(e) => setEditingAdmin({ ...editingAdmin, password: e.target.value })}
                     />
-                    <button onClick={() => updateAdmin(editingAdmin.adminid)}>Update Admin</button>
-                    <button onClick={() => setEditingAdmin(null)}>Cancel</button>
+                    <button className="edit-button" onClick={() => updateAdmin(editingAdmin.adminid)}>Update Admin</button>
+                    <button className="cancel-button" onClick={() => setEditingAdmin(null)}>Cancel</button>
                 </div>
             )}
         </div>

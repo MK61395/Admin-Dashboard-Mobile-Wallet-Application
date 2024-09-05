@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './AdminDashboard.css'; // Reuse the CSS file
+import './AdminDashboard.css';  // Reuse the CSS file
 
 function InvestorDashboard() {
     const [investors, setInvestors] = useState([]);
-    const [formData, setFormData] = useState({ name: '', dateOfBirth: '', email: '', password: '', account: '', image: '' });
+    const [formData, setFormData] = useState({ name: '', dateOfBirth: '', email: '', password: '', account: '' });
     const [editMode, setEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
@@ -24,27 +24,24 @@ function InvestorDashboard() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (editMode) {
-            axios.put(`http://localhost:5000/investor/${editingId}`, formData)
-                .then(response => {
+        const url = editMode 
+            ? `http://localhost:5000/investor/${editingId}`
+            : 'http://localhost:5000/investor';
+        const method = editMode ? 'put' : 'post';
+        axios({ method, url, data: formData })
+            .then(response => {
+                if (editMode) {
                     setInvestors(investors.map(investor => (investor.investorid === editingId ? response.data : investor)));
                     setEditMode(false);
                     setEditingId(null);
-                    setFormData({ name: '', dateOfBirth: '', email: '', password: '', account: '', image: '' });
-                })
-                .catch(error => {
-                    console.error('There was an error updating the investor!', error);
-                });
-        } else {
-            axios.post('http://localhost:5000/investor', formData)
-                .then(response => {
+                } else {
                     setInvestors([...investors, response.data]);
-                    setFormData({ name: '', dateOfBirth: '', email: '', password: '', account: '', image: '' });
-                })
-                .catch(error => {
-                    console.error('There was an error creating the investor!', error);
-                });
-        }
+                }
+                setFormData({ name: '', dateOfBirth: '', email: '', password: '', account: '' });
+            })
+            .catch(error => {
+                console.error('There was an error processing the investor!', error);
+            });
     };
 
     const handleEdit = (investor) => {
@@ -55,8 +52,7 @@ function InvestorDashboard() {
             dateOfBirth: investor.dateofbirth,
             email: investor.email,
             password: investor.password,
-            account: investor.account,
-            image: investor.image
+            account: investor.account
         });
     };
 
@@ -70,19 +66,21 @@ function InvestorDashboard() {
             });
     };
 
-    return (
-        <div>
-            <h1>Investor Dashboard</h1>
-            <form onSubmit={handleSubmit}>
-                <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
-                <input name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} placeholder="Date of Birth" required />
-                <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-                <input name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
-                <input name="account" value={formData.account} onChange={handleChange} placeholder="Account" required />
-                <input name="image" value={formData.image} onChange={handleChange} placeholder="Image URL" required />
-                <button type="submit">{editMode ? 'Update Investor' : 'Add Investor'}</button>
-            </form>
+    // Helper function to generate image URL based on investor name
+    const getInvestorImage = (name) => {
+        const cleanName = name.replace(/\s/g, ''); // Remove spaces in the name
+        const imageExtensions = ['png', 'jpg', 'jpeg'];
+        const basePath = `/images/${cleanName}`;
 
+        // Assume the first matching image extension found
+        for (const ext of imageExtensions) {
+            return `${basePath}.${ext}`;
+        }
+    };
+
+    return (
+        <div className="dashboard-content">
+            <h1>Investor Dashboard</h1>
             <table>
                 <thead>
                     <tr>
@@ -102,16 +100,72 @@ function InvestorDashboard() {
                             <td>{investor.email}</td>
                             <td>{investor.account}</td>
                             <td>
-                                <img src={investor.image} alt="Investor" style={{ width: '50px' }} />
+                                <img 
+                                    src={getInvestorImage(investor.name)} 
+                                    alt={investor.name} 
+                                    onError={(e) => { e.target.src = '/images/default.png'; }} // Fallback image
+                                    style={{ width: '50px' }} 
+                                />
                             </td>
                             <td>
-                                <button onClick={() => handleEdit(investor)}>Edit</button>
-                                <button onClick={() => handleDelete(investor.investorid)}>Delete</button>
+                                <button className="edit-button" onClick={() => handleEdit(investor)}>Edit</button>
+                                <button className="delete-button" onClick={() => handleDelete(investor.investorid)}>Delete</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <h2>{editMode ? 'Edit Investor' : 'Add New Investor'}</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+                
+                <input
+                    type="date"
+                    name="dateOfBirth"
+                    placeholder="Date of Birth"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="account"
+                    placeholder="Account"
+                    value={formData.account}
+                    onChange={handleChange}
+                    required
+                />
+                <button type="submit" className={editMode ? "edit-button" : "add-button"}>
+                    {editMode ? 'Update Investor' : 'Add Investor'}
+                </button>
+                {editMode && (
+                    <button className="cancel-button" onClick={() => setEditMode(false)}>Cancel</button>
+                )}
+            </form>
         </div>
     );
 }

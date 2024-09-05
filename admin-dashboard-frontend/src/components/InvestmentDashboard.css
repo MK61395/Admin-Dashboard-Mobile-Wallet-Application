@@ -87,6 +87,17 @@ input:focus {
     outline: none;
 }
 
+.navbar {
+    width: 185px;
+    background-color: #08203e;
+    color: #ecf0f1;
+    min-height: 100vh;
+    height: 100%;
+    padding: 20px;
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+
 
 
 /* Responsive adjustments */
