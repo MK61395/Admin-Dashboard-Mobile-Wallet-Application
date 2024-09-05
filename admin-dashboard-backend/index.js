@@ -52,6 +52,8 @@ app.use('/project', projectRoutes);
 app.use('/investment', investmentRoutes);
 app.use('/analytics', analyticsRoutes);
 
+app.use('/images', express.static('images'));
+
 // Add route for file uploads
 app.post('/upload', upload.single('media'), (req, res) => {
     try {
