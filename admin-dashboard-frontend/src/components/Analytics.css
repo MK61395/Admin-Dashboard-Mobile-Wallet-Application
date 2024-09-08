@@ -5,14 +5,15 @@
 .card-container {
     display: flex;
     justify-content: center;
-    gap: 1px;
+    gap: 10px;
+    padding-bottom: 10px;
 }
 
 .card {
-    background-color: #fff; /* Card background color */
+    background-color: #d6dce3; /* Card background color */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 5px;
+    padding: 5px 5px;
     width: 40%; /* Adjust width to fit in a row */
     box-sizing: border-box;
 }

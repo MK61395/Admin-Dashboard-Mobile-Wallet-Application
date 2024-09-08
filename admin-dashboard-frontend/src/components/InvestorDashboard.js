@@ -47,14 +47,24 @@ function InvestorDashboard() {
     const handleEdit = (investor) => {
         setEditMode(true);
         setEditingId(investor.investorid);
+    
+        const date = new Date(investor.dateofbirth);
+        const pakistanTimeOffset = 5 * 60; // PKT is UTC+5 hours in minutes
+        const localDate = new Date(date.getTime() + pakistanTimeOffset * 60000);
+    
+        const formattedDate = localDate.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+    
         setFormData({
             name: investor.name,
-            dateOfBirth: investor.dateofbirth,
+            dateOfBirth: formattedDate, // Use the adjusted date
             email: investor.email,
             password: investor.password,
             account: investor.account
         });
     };
+    
+    
+    
 
     const handleDelete = (id) => {
         axios.delete(`http://localhost:5000/investor/${id}`)
@@ -69,14 +79,9 @@ function InvestorDashboard() {
     // Helper function to generate image URL based on investor name
     const getInvestorImage = (name) => {
         const cleanName = name.replace(/\s/g, ''); // Remove spaces in the name
-        const imageExtensions = ['png', 'jpg', 'jpeg'];
-        const basePath = `/images/${cleanName}`;
-
-        // Assume the first matching image extension found
-        for (const ext of imageExtensions) {
-            return `${basePath}.${ext}`;
-        }
+        return `/images/${cleanName}.png`; // Assuming images are .png. Adjust extension as necessary.
     };
+    
 
     return (
         <div className="dashboard-content">
@@ -96,7 +101,14 @@ function InvestorDashboard() {
                     {investors.map(investor => (
                         <tr key={investor.investorid}>
                             <td>{investor.name}</td>
-                            <td>{investor.dateofbirth}</td>
+                            <td>
+                            {new Date(investor.dateofbirth).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                })}
+                            </td>
+
                             <td>{investor.email}</td>
                             <td>{investor.account}</td>
                             <td>
@@ -126,7 +138,6 @@ function InvestorDashboard() {
                     onChange={handleChange}
                     required
                 />
-                
                 <input
                     type="date"
                     name="dateOfBirth"

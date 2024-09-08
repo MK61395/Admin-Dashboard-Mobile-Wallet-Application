@@ -7,7 +7,7 @@ function ProjectDashboard() {
     const [formData, setFormData] = useState({
         adminID: '',
         title: '',
-        description: '',
+        description: '', // Ensure this is initialized
         targetAmount: '',
         startDate: '',
         endDate: ''
@@ -46,6 +46,7 @@ function ProjectDashboard() {
                 } else {
                     setProjects([...projects, response.data]);
                 }
+                // Clear formData only if successful
                 setFormData({
                     adminID: '',
                     title: '',
@@ -64,10 +65,10 @@ function ProjectDashboard() {
         setFormData({
             adminID: project.adminid,
             title: project.title,
-            description: project.description,
+            description: project.description, // Ensure description is set correctly
             targetAmount: project.targetamount,
-            startDate: project.startdate,
-            endDate: project.enddate
+            startDate: project.startdate.split('T')[0], // Format to YYYY-MM-DD
+            endDate: project.enddate.split('T')[0] // Format to YYYY-MM-DD
         });
         setEditingId(project.projectid);
         setEditMode(true);
@@ -84,37 +85,39 @@ function ProjectDashboard() {
     };
 
     return (
-        <div className="dashboard-content">
-            <h1>Project Dashboard</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Admin ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Target Amount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {projects.map(project => (
-                        <tr key={project.projectid}>
-                            <td>{project.adminid}</td>
-                            <td>{project.title}</td>
-                            <td>{project.description}</td>
-                            <td>{project.targetamount}</td>
-                            <td>{new Date(project.startdate).toLocaleDateString()}</td>
-                            <td>{new Date(project.enddate).toLocaleDateString()}</td>
-                            <td>
-                                <button className="edit-button" onClick={() => handleEdit(project)}>Edit</button>
-                                <button className="delete-button" onClick={() => handleDelete(project.projectid)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="dashboard-content">
+                <h1>Project Dashboard</h1>
+                <div className="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Admin ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Target Amount</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {projects.map(project => (
+                                <tr key={project.projectid}>
+                                    <td>{project.adminid}</td>
+                                    <td title={project.title}>{project.title}</td>
+                                    <td title={project.description}>{project.description}</td>
+                                    <td>{project.targetamount}</td>
+                                    <td>{new Date(project.startdate).toLocaleDateString()}</td>
+                                    <td>{new Date(project.enddate).toLocaleDateString()}</td>
+                                    <td>
+                                        <button className="edit-button" onClick={() => handleEdit(project)}>Edit</button>
+                                        <button className="delete-button" onClick={() => handleDelete(project.projectid)}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    </div>
 
             <h2>{editMode ? 'Edit Project' : 'Add New Project'}</h2>
             <form onSubmit={handleSubmit}>
@@ -139,6 +142,7 @@ function ProjectDashboard() {
                     name="description"
                     placeholder="Description"
                     value={formData.description}
+                    onChange={handleInputChange}
                 />
                 <input
                     type="number"

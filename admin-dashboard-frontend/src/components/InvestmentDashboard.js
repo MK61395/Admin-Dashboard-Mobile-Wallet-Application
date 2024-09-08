@@ -79,11 +79,17 @@ function InvestmentDashboard() {
     };
 
     const handleEdit = (investment) => {
+        // Convert date to PKT
+        const date = new Date(investment.investeddate);
+        const pakistanTimeOffset = 5 * 60; // PKT is UTC+5 hours in minutes
+        const localDate = new Date(date.getTime() + pakistanTimeOffset * 60000);
+        const formattedDate = localDate.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+
         setFormData({
             investorID: investment.investorid,
             projectID: investment.projectid,
             amount: investment.amount,
-            investedDate: investment.investeddate,
+            investedDate: formattedDate, // Use the adjusted date
             profitOrLoss: investment.profitorloss,
         });
         setEditingId(investment.investmentid);
@@ -127,7 +133,7 @@ function InvestmentDashboard() {
                                 {investment.media ? (
                                     <img src={`http://localhost:5000/uploads/${investment.media}`} alt="Investment Media" width="100" />
                                 ) : (
-                                    <span>No Media 1</span>
+                                    <span>No Media</span>
                                 )}
                             </td>
                             <td>
@@ -141,16 +147,58 @@ function InvestmentDashboard() {
 
             <h2>{editMode ? 'Edit Investment' : 'Add New Investment'}</h2>
             <form onSubmit={handleSubmit}>
-                <input type="number" name="investorID" placeholder="Investor ID" value={formData.investorID} onChange={handleInputChange} required />
-                <input type="number" name="projectID" placeholder="Project ID" value={formData.projectID} onChange={handleInputChange} required />
-                <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleInputChange} required />
-                <input type="date" name="investedDate" placeholder="Invested Date" value={formData.investedDate} onChange={handleInputChange} required />
-                <input type="text" name="profitOrLoss" placeholder="Profit or Loss" value={formData.profitOrLoss} onChange={handleInputChange} />
-                <input type="file" name="media" onChange={handleMediaChange} />
-                <button className={editMode ? "edit-button" : "add-button"} type="submit">
-                    {editMode ? 'Update Investment' : 'Add Investment'}
-                </button>
-            </form>
+    <input
+        type="number"
+        name="investorID"
+        placeholder="Investor ID"
+        value={formData.investorID}
+        onChange={handleInputChange}
+        required
+    />
+    <input
+        type="number"
+        name="projectID"
+        placeholder="Project ID"
+        value={formData.projectID}
+        onChange={handleInputChange}
+        required
+    />
+    <input
+        type="number"
+        name="amount"
+        placeholder="Amount"
+        value={formData.amount}
+        onChange={handleInputChange}
+        required
+    />
+    <input
+        type="date"
+        name="investedDate"
+        placeholder="Invested Date"
+        value={formData.investedDate}
+        onChange={handleInputChange}
+        required
+    />
+    <input
+        type="text"
+        name="profitOrLoss"
+        placeholder="Profit or Loss"
+        value={formData.profitOrLoss}
+        onChange={handleInputChange}
+    />
+    <input
+        type="file"
+        name="media"
+        onChange={handleMediaChange}
+    />
+    <button className={editMode ? "edit-button" : "add-button"} type="submit">
+        {editMode ? 'Update Investment' : 'Add Investment'}
+    </button>
+    {editMode && (
+        <button className="cancel-button" onClick={() => setEditMode(false)}>Cancel</button>
+    )}
+</form>
+
         </div>
     );
 }

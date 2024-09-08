@@ -6,7 +6,12 @@ import ProjectDashboard from './components/ProjectDashboard';
 import InvestmentDashboard from './components/InvestmentDashboard';
 import Analytics from './components/Analytics'; // Import the Analytics component
 import './App.css';
-import logo from './logo.png'; // Import the logo image
+import logo from './assets/logo.png'; // Import the logo image
+import adminIcon from './assets/admin.svg'; // Import the icons
+import investmentIcon from './assets/investment.svg';
+import investorIcon from './assets/investor.svg';
+import projectIcon from './assets/project.svg';
+import homeIcon from './assets/analytics.svg'; // Assuming you add a home icon as well
 
 function App() {
     const [isNavbarOpen, setIsNavbarOpen] = useState(true);
@@ -18,20 +23,40 @@ function App() {
     return (
         <Router>
             <div className={`app-container ${isNavbarOpen ? 'navbar-open' : 'navbar-closed'}`}>
-                <div className="navbar">
-                    <div className="logo-container">
-                        <img src={logo} alt="Logo" />
-                        <span>Ritter Dahait</span>
-                    </div>
-                    <button className="navbar-toggle" onClick={toggleNavbar}>
-                        {isNavbarOpen ? '◄' : '►'}
-                    </button>
+  <div className="navbar">
+    <div className="logo-container">
+      <img src={logo} alt="Logo" />
+      <span>Ritter Dahait</span>
+    </div>
+    <button className="navbar-toggle" onClick={toggleNavbar}>
+      <span className={`arrow ${isNavbarOpen ? 'arrow-open' : 'arrow-closed'}`}></span>
+    </button>
                     <ul>
-                        <li><a href="/analytics">Home</a></li> {/* Analytics/Home Link */}
-                        <li><a href="/admin">Admin Dashboard</a></li>
-                        <li><a href="/investors">Investor Dashboard</a></li>
-                        <li><a href="/projects">Project Dashboard</a></li>
-                        <li><a href="/investments">Investment Dashboard</a></li>
+                        <li>
+                            <a href="/analytics">
+                                <img src={homeIcon} alt="Home" className="icon" /> Analytics Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin">
+                                <img src={adminIcon} alt="Admin" className="icon" /> Admin Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/investors">
+                                <img src={investorIcon} alt="Investors" className="icon" /> Investor Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/projects">
+                                <img src={projectIcon} alt="Projects" className="icon" /> Project Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/investments">
+                                <img src={investmentIcon} alt="Investments" className="icon" /> Investment Dashboard
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div className="content">
