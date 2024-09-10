@@ -4,7 +4,7 @@ import './AdminDashboard.css';  // Reuse the CSS file
 
 function InvestorDashboard() {
     const [investors, setInvestors] = useState([]);
-    const [formData, setFormData] = useState({ name: '', dateOfBirth: '', email: '', password: '', account: '' });
+    const [formData, setFormData] = useState({ name: '', dateOfBirth: '', email: '', password: '', account: 'Active' });
     const [editMode, setEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
@@ -37,7 +37,7 @@ function InvestorDashboard() {
                 } else {
                     setInvestors([...investors, response.data]);
                 }
-                setFormData({ name: '', dateOfBirth: '', email: '', password: '', account: '' });
+                setFormData({ name: '', dateOfBirth: '', email: '', password: '', account: 'Active' });
             })
             .catch(error => {
                 console.error('There was an error processing the investor!', error);
@@ -62,9 +62,6 @@ function InvestorDashboard() {
             account: investor.account
         });
     };
-    
-    
-    
 
     const handleDelete = (id) => {
         axios.delete(`http://localhost:5000/investor/${id}`)
@@ -81,7 +78,6 @@ function InvestorDashboard() {
         const cleanName = name.replace(/\s/g, ''); // Remove spaces in the name
         return `/images/${cleanName}.png`; // Assuming images are .png. Adjust extension as necessary.
     };
-    
 
     return (
         <div className="dashboard-content">
@@ -108,7 +104,6 @@ function InvestorDashboard() {
                                 year: 'numeric',
                                 })}
                             </td>
-
                             <td>{investor.email}</td>
                             <td>{investor.account}</td>
                             <td>
@@ -162,14 +157,16 @@ function InvestorDashboard() {
                     onChange={handleChange}
                     required
                 />
-                <input
-                    type="text"
+                <select
                     name="account"
-                    placeholder="Account"
                     value={formData.account}
                     onChange={handleChange}
                     required
-                />
+                >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Suspended">Suspended</option>
+                </select>
                 <button type="submit" className={editMode ? "edit-button" : "add-button"}>
                     {editMode ? 'Update Investor' : 'Add Investor'}
                 </button>
