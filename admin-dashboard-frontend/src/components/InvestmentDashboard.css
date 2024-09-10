@@ -1,4 +1,9 @@
 /* Container Styling */
+.dashboard-content {
+    padding: 20px;
+    font-family: 'Roboto', sans-serif; /* Modern and clean font */
+}
+
 .container {
     margin-bottom: 20px;
     padding: 20px;
@@ -71,6 +76,14 @@ button.cancel-button {
 h1, h2 {
     color: #08203E; /* Primary color for headings */
     margin-bottom: 20px;
+}
+
+h1.dashboard-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #08203E;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 /* Input Fields */

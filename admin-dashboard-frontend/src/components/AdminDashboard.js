@@ -55,7 +55,7 @@ function AdminDashboard() {
 
     return (
         <div className="dashboard-content">
-            <h1>Admin Dashboard</h1>
+            <h1 className="dashboard-title">Admin Dashboard</h1>
             <table>
                 <thead>
                     <tr>

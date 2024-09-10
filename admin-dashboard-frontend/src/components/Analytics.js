@@ -98,7 +98,7 @@ const Analytics = () => {
 
     return (
         <div className="dashboard-content">
-            <h1>Analytics</h1>
+            <h1 className="dashboard-title">Analytics Dashboard</h1>
             <div className="card-container">
                 <div className="card">
                     <h2>User and Resource Statistics</h2>

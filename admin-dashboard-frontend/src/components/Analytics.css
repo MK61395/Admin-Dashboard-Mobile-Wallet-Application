@@ -1,31 +1,45 @@
 .dashboard-content {
-    padding: 5px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif; /* Modern and clean font */
 }
 
 .card-container {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    padding-bottom: 10px;
+    gap: 20px;
+    padding-bottom: 20px;
 }
 
 .card {
-    background-color: #d6dce3; /* Card background color */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 5px 5px;
-    width: 40%; /* Adjust width to fit in a row */
-    box-sizing: border-box;
+    background-color: #d6dce3; 
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    width: 40%; 
+    transition: transform 0.3s ease; /* Hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .chart-container {
-    height: 300px; /* Set a fixed height for charts */
+    height: 300px;
+}
+
+h1.dashboard-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #08203E;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #08203E; /* Match your primary color */
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #08203E; 
 }
 
 @media (max-width: 768px) {

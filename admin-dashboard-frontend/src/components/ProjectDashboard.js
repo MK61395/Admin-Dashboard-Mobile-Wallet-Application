@@ -86,7 +86,7 @@ function ProjectDashboard() {
 
     return (
             <div className="dashboard-content">
-                <h1>Project Dashboard</h1>
+                <h1 className="dashboard-title">Project Dashboard</h1>
                 <div className="table-container">
                     <table>
                         <thead>

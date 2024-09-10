@@ -108,7 +108,7 @@ function InvestmentDashboard() {
 
     return (
         <div className="dashboard-content">
-            <h1>Investment Dashboard</h1>
+            <h1 className="dashboard-title">Investment Dashboard</h1>
             <table>
                 <thead>
                     <tr>
