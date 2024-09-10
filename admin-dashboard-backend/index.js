@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const multer = require('multer');
 const path = require('path');
 const { Pool } = require('pg'); // or your DB client
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 dotenv.config();
@@ -44,6 +46,7 @@ const investorRoutes = require('./routes/investor');
 const projectRoutes = require('./routes/project');
 const investmentRoutes = require('./routes/investment');
 const analyticsRoutes = require('./routes/analytics'); // Adjust the path as necessary
+const authRoutes = require('./routes/auth');  // New auth routes
 
 // Use routes
 app.use('/admin', adminRoutes);
@@ -51,6 +54,7 @@ app.use('/investor', investorRoutes);
 app.use('/project', projectRoutes);
 app.use('/investment', investmentRoutes);
 app.use('/analytics', analyticsRoutes);
+app.use('/auth', authRoutes);  // New auth routes
 
 app.use('/images', express.static('images'));
 
