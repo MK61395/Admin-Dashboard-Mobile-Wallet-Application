@@ -16,17 +16,28 @@ router.get('/', async (req, res) => {
 // Create a new admin
 router.post('/', async (req, res) => {
     const { name, email, password } = req.body;
+
     try {
+        // Check if the email already exists
+        const existingAdmin = await db.query('SELECT * FROM Admin WHERE email = $1', [email]);
+
+        if (existingAdmin.rows.length > 0) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
         const result = await db.query(
             'INSERT INTO Admin (name, email, password) VALUES ($1, $2, $3) RETURNING *',
             [name, email, password]
         );
-        res.status(201).json(result.rows[0]);
+
+        return res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        console.error('Database error:', err.message);
+        return res.status(500).json({ message: 'Server error', details: err.message });
     }
 });
+
+
 
 // Update an admin
 router.put('/:id', async (req, res) => {

@@ -7,11 +7,21 @@ const { Pool } = require('pg'); // or your DB client
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Middleware: Set up CORS
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://bigbuffalowings.com'],
+  credentials: true
+}));
+
+
+
+// Middleware: Enable JSON parsing
+app.use(express.json());
 
 // PostgreSQL setup
 const pool = new Pool({
@@ -34,12 +44,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Middleware
-app.use(cors({
-    origin: 'http://localhost:3000' // Allow requests from frontend port
-}));
-app.use(express.json());
-
 // Routes
 const adminRoutes = require('./routes/admin');
 const investorRoutes = require('./routes/investor');
@@ -56,9 +60,11 @@ app.use('/investment', investmentRoutes);
 app.use('/analytics', analyticsRoutes);
 app.use('/auth', authRoutes);  // New auth routes
 
+// Serving static files
 app.use('/images', express.static('images'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Add route for file uploads
+// File upload route
 app.post('/upload', upload.single('media'), (req, res) => {
     try {
         res.status(200).json({
@@ -68,9 +74,6 @@ app.post('/upload', upload.single('media'), (req, res) => {
         res.status(500).send('Error uploading file');
     }
 });
-
-// Serving uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

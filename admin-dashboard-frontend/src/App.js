@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 import AdminDashboard from './components/AdminDashboard';
 import InvestorDashboard from './components/InvestorDashboard';
 import ProjectDashboard from './components/ProjectDashboard';
@@ -55,7 +55,7 @@ function App() {
 }
 
 function AppContent({ isLoggedIn, isNavbarOpen, toggleNavbar, handleLogin, handleLogout }) {
-  const location = useLocation();
+  //const location = useLocation();
 
   if (!isLoggedIn) {
     return <Login onLogin={handleLogin} />;

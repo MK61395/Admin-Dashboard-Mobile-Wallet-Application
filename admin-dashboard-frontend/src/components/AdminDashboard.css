@@ -176,3 +176,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"]::-webkit-inner-spin-button {
     display: none;
 }
+
+
+
+
+.error-message {
+    color: #ff0000;
+    background-color: #ffe6e6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+.success-message {
+    color: #008000;
+    background-color: #e6ffe6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
