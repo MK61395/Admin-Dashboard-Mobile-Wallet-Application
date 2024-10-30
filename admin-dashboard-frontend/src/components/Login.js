@@ -14,12 +14,19 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     try {
       console.log('Attempting login with:', { name, password: '****' });
-      const response = await axios.post('http://localhost:5000/auth/login', { name, password });
+      
+      const response = await axios.post('/auth/admin/login', { email: name, password });
+      
       console.log('Login response:', response.data);
-      if (response.data.success) {
+  
+      // Check if msg indicates a successful login
+      if (response.data.message && response.data.message.includes('logged in successfully')) {
+        console.log('Token:', response.data.token);
+        console.log('Message:', response.data.message);
+        
         localStorage.setItem('token', response.data.token);
         onLogin();
-        navigate('/analytics');  // Always redirect to /analytics after successful login
+        navigate('/analytics'); // Redirecting after succesful login
       } else {
         setError('Login failed: ' + (response.data.message || 'Unknown error'));
       }
@@ -28,6 +35,7 @@ const Login = ({ onLogin }) => {
       setError('Login error: ' + (error.response?.data?.message || error.message || 'Unknown error'));
     }
   };
+  
 
   return (
     <div className="login-container">
