@@ -156,27 +156,38 @@ select {
     padding-right: 30px;
 }
 
-input[type="text"]:focus,
-input[type="date"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-select:focus {
-    outline: none;
-    border-color: #08203E;
-    box-shadow: 0 0 5px rgba(8, 32, 62, 0.3);
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.form-group label {
+    width: 150px; /* Set fixed width for labels */
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="file"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    height: 40px; /* Consistent height for all inputs */
+}
+
+button {
+    margin-top: 15px;
 }
 
 /* Placeholder styling */
 ::placeholder {
     color: #aaa;
-}
-
-/* Styling for date input cross-browser */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    color: #08203E;
-    opacity: 0.6;
-}
-
-input[type="date"]::-webkit-inner-spin-button {
-    display: none;
 }
