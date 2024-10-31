@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './AdminDashboard.css';  // Assuming you want to reuse the same styles as Admin Dashboard
+import './AdminDashboard.css';
 
 function ProjectDashboard() {
     const [projects, setProjects] = useState([]);
     const [formData, setFormData] = useState({
         adminID: '',
         title: '',
-        description: '', // Ensure this is initialized
+        description: '',
         targetAmount: '',
+        category: '',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        totalAmountInvested: '',
+        roi: '',
+        totalRevenueGenerated: '',
+        status: ''
     });
     const [editMode, setEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProjects, setFilteredProjects] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/project')
+        // Get all projects from API
+        axios.get('/project/getAllProjects')
             .then(response => {
+                console.log('Projects fetched:', response.data);
                 setProjects(response.data);
+                setFilteredProjects(response.data); // Initially display all projects
             })
             .catch(error => {
-                console.error('There was an error fetching the data!', error);
+                console.error('There was an error fetching the projects!', error);
             });
     }, []);
 
@@ -30,144 +40,178 @@ function ProjectDashboard() {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        console.log("Search term changed:", value); // Log input value
+        setSearchTerm(value);
+        handleSearch(value);  // Trigger search with updated value
+    };
+
+    const handleSearch = (term) => {
+        console.log("Searching with term:", term); // Log current search term
+        if (term === "") {
+            console.log("Search term is empty. Showing all projects.");
+            setFilteredProjects(projects); // Reset to show all projects if term is empty
+        } else {
+            const filtered = projects.filter(project =>
+                project.title.toLowerCase().includes(term.toLowerCase()) ||
+                project.category.toLowerCase().includes(term.toLowerCase())
+            );
+            console.log("Filtered projects:", filtered); // Log filtered results
+            setFilteredProjects(filtered);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = editMode
-            ? `http://localhost:5000/project/${editingId}`
-            : 'http://localhost:5000/project';
+        const url = editMode ? `/project/updateProject/${editingId}` : '/project/addProject';
         const method = editMode ? 'put' : 'post';
         axios({ method, url, data: formData })
             .then(response => {
-                if (editMode) {
-                    setProjects(projects.map(project =>
-                        project.projectid === editingId ? response.data : project
-                    ));
-                    setEditMode(false);
-                } else {
-                    setProjects([...projects, response.data]);
+                console.log('API Response:', response.data.message || response.data);
+                if (!editMode) {
+                    setProjects([...projects, formData]);
                 }
-                // Clear formData only if successful
+                setEditMode(false);
                 setFormData({
                     adminID: '',
                     title: '',
                     description: '',
                     targetAmount: '',
+                    category: '',
                     startDate: '',
-                    endDate: ''
+                    endDate: '',
+                    totalAmountInvested: '',
+                    roi: '',
+                    totalRevenueGenerated: '',
+                    status: ''
                 });
             })
             .catch(error => {
-                console.error('There was an error submitting the project!', error);
+                console.error('Error submitting the project!', error);
             });
     };
 
     const handleEdit = (project) => {
         setFormData({
-            adminID: project.adminid,
+            adminID: project.adminID,
             title: project.title,
-            description: project.description, // Ensure description is set correctly
+            description: project.description,
             targetAmount: project.targetamount,
-            startDate: project.startdate.split('T')[0], // Format to YYYY-MM-DD
-            endDate: project.enddate.split('T')[0] // Format to YYYY-MM-DD
+            category: project.category,
+            startDate: project.startdate.split('T')[0],
+            endDate: project.enddate.split('T')[0],
+            totalAmountInvested: project.totalamountinvested,
+            roi: project.roi,
+            totalRevenueGenerated: project.totalrevenuegenerated,
+            status: project.status
         });
         setEditingId(project.projectid);
         setEditMode(true);
     };
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:5000/project/${id}`)
+        axios.delete(`/project/deleteProject/${id}`)
             .then(() => {
                 setProjects(projects.filter(project => project.projectid !== id));
             })
             .catch(error => {
-                console.error('There was an error deleting the project!', error);
+                console.error('Error deleting the project!', error);
             });
     };
 
     return (
-            <div className="dashboard-content">
-                <h1 className="dashboard-title">Project Dashboard</h1>
-                <div className="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Admin ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Target Amount</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Actions</th>
+        <div className="dashboard-content">
+            <h1 className="dashboard-title">Project Dashboard</h1>
+
+            <div className="search-bar-container">
+                <input
+                    type="text"
+                    className="search-bar"
+                    placeholder="Search by title or category..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+                <button className="search-button" onClick={() => handleSearch(searchTerm)}>
+                    <span className="material-icons">Search</span>
+                </button>
+            </div>
+
+            <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Target Amount</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Amount Invested</th>
+                            <th>ROI</th>
+                            <th>Total Revenue</th>
+                            <th>Status</th>
+                            <th>Admin Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredProjects.map(project => (
+                            <tr key={project.projectid}>
+                                <td>{project.projectid}</td>
+                                <td>{project.title}</td>
+                                <td>{project.category}</td>
+                                <td>{project.targetamount}</td>
+                                <td>{new Date(project.startdate).toLocaleDateString()}</td>
+                                <td>{new Date(project.enddate).toLocaleDateString()}</td>
+                                <td>{project.totalamountinvested}</td>
+                                <td>{project.roi}</td>
+                                <td>{project.totalrevenuegenerated}</td>
+                                <td>{project.status}</td>
+                                <td>{project.adminname}</td>
+                                <td>
+                                    <button className="edit-button" onClick={() => handleEdit(project)}>Edit</button>
+                                    <button className="delete-button" onClick={() => handleDelete(project.projectid)}>Delete</button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {projects.map(project => (
-                                <tr key={project.projectid}>
-                                    <td>{project.adminid}</td>
-                                    <td title={project.title}>{project.title}</td>
-                                    <td title={project.description}>{project.description}</td>
-                                    <td>{project.targetamount}</td>
-                                    <td>{new Date(project.startdate).toLocaleDateString()}</td>
-                                    <td>{new Date(project.enddate).toLocaleDateString()}</td>
-                                    <td>
-                                        <button className="edit-button" onClick={() => handleEdit(project)}>Edit</button>
-                                        <button className="delete-button" onClick={() => handleDelete(project.projectid)}>Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    </div>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             <h2>{editMode ? 'Edit Project' : 'Add New Project'}</h2>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="number"
-                    name="adminID"
-                    placeholder="Admin ID"
-                    value={formData.adminID}
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="Title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                />
-                <input
-                    type="number"
-                    name="targetAmount"
-                    placeholder="Target Amount"
-                    value={formData.targetAmount}
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    type="date"
-                    name="startDate"
-                    placeholder="Start Date"
-                    value={formData.startDate}
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    type="date"
-                    name="endDate"
-                    placeholder="End Date"
-                    value={formData.endDate}
-                    onChange={handleInputChange}
-                    required
-                />
+                <input type="number" name="adminID" placeholder="Admin ID" value={formData.adminID} onChange={handleInputChange} required />
+                <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleInputChange} required />
+                <input type="text" name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} />
+                <input type="number" name="targetAmount" placeholder="Target Amount" value={formData.targetAmount} onChange={handleInputChange} required />
+                
+                <select name="category" value={formData.category} onChange={handleInputChange} required>
+                    <option value="">Select Category</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Education">Education</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Bonds">Bonds</option>
+                    <option value="Stocks">Stocks</option>
+                    <option value="Wellness">Wellness</option>
+                    <option value="Hospitality">Hospitality</option>
+                </select>
+
+                <input type="date" name="startDate" placeholder="Start Date" value={formData.startDate} onChange={handleInputChange} required />
+                <input type="date" name="endDate" placeholder="End Date" value={formData.endDate} onChange={handleInputChange} required />
+                
+                <input type="number" name="totalAmountInvested" placeholder="Total Amount Invested" value={formData.totalAmountInvested} onChange={handleInputChange} />
+                <input type="number" name="roi" placeholder="ROI" value={formData.roi} onChange={handleInputChange} />
+                <input type="number" name="totalRevenueGenerated" placeholder="Total Revenue" value={formData.totalRevenueGenerated} onChange={handleInputChange} />
+
+                <select name="status" value={formData.status} onChange={handleInputChange} required>
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Suspended">Suspended</option>
+                </select>
+
                 <button type="submit" className={editMode ? "edit-button" : "add-button"}>
                     {editMode ? 'Update Project' : 'Add Project'}
                 </button>

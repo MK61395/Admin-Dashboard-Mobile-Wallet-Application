@@ -123,9 +123,6 @@ h1.dashboard-title {
 }
 
 
-
-
-
 /* Input Fields and Select Dropdown */
 input[type="text"],
 input[type="date"],
@@ -195,3 +192,53 @@ input[type="date"]::-webkit-inner-spin-button {
     margin: 10px 0;
     border-radius: 4px;
 }
+
+/* Search bar styling */
+/* Search Bar Styling */
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px; /* Adjusted padding for consistency */
+    border: 1px solid #08203E; /* Darker border */
+    border-radius: 4px;
+    font-size: 14px;
+    height: 43px; /* Set a specific height */
+    box-sizing: border-box; 
+}
+
+.search-bar::placeholder {
+    color: #08203E; 
+    opacity: 1;
+}
+
+
+.search-button {
+    background-color: #08203E;
+    border: none;
+    color: white;
+    padding: 10px 15px; 
+    margin-left: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #08203E; 
+    display: flex;
+    align-items: center;
+    height: 40px; 
+}
+
+.search-button .material-icons {
+    font-size: 15px;
+    margin-right: 4px;
+}
+
+
+/* Highlighting Search Result */
+.highlighted {
+    background-color: #ff0000;
+}
+
