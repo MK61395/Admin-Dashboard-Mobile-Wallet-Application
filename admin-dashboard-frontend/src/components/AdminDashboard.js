@@ -14,6 +14,8 @@ function AdminDashboard() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,14 +25,43 @@ function AdminDashboard() {
     }));
   };
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    console.log("Search term changed:", value); // Log input value
+    setSearchTerm(value);
+    handleSearch(value); // Trigger search with updated value
+  };
+
+  const handleSearch = (term) => {
+    console.log("Searching with term:", term); // Log current search term
+    if (term === "") {
+      console.log("Search term is empty. Showing all admins.");
+      setFilteredProjects(admins); // Reset to show all admins if term is empty
+    } else {
+      const filtered = admins.filter((admin) =>
+        admin.name.toLowerCase().includes(term.toLowerCase())
+      );
+      console.log("Filtered admins:", filtered); // Log filtered results
+      setFilteredProjects(filtered);
+    }
+  };
+
   useEffect(() => {
     fetchAdmins();
   }, []);
 
+  // Update to set the initial value for filteredProjects
+useEffect(() => {
+    setFilteredProjects(admins);
+  }, [admins]);
+
   const fetchAdmins = () => {
     api
-      .get("/admin")
-      .then((response) => setAdmins(response.data))
+    .get("/admin")
+    .then((response) => {
+      setAdmins(response.data);
+      setFilteredProjects(response.data); // Set both admins and filteredProjects initially
+    })
       .catch((error) => {
         console.error("There was an error fetching the data!", error);
         setError("Failed to fetch admins");
@@ -191,6 +222,24 @@ function AdminDashboard() {
     <div className="dashboard-content">
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
+      <div className="search-bar-container">
+        <div className="input-wrapper">
+          <input
+            type="text"
+            className="search-bar"
+            placeholder="Search by admin name..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <button
+          className="search-button"
+          onClick={() => handleSearch(searchTerm)}
+        >
+          Search
+        </button>
+      </div>
+
       {error && (
         <div className="error-message">
           <strong>Error:</strong> {error}
@@ -212,7 +261,7 @@ function AdminDashboard() {
           </tr>
         </thead>
         <tbody>
-          {admins.map((admin) => (
+          {(searchTerm ? filteredProjects : admins).map((admin) => (
             <tr key={admin.adminid}>
               <td>{admin.name}</td>
               <td>{admin.email}</td>

@@ -183,45 +183,50 @@ select {
 }
 
 /* Search bar styling */
-/* Search Bar Styling */
 .search-bar-container {
     display: flex;
-    align-items: center;
+    gap: 8px;
     margin-bottom: 20px;
+}
+
+.input-wrapper {
+    flex: 1;
 }
 
 .search-bar {
     width: 100%;
-    padding: 10px; /* Adjusted padding for consistency */
-    border: 1px solid #08203E; /* Darker border */
+    padding: 10px;
+    border: 1px solid #08203E;
     border-radius: 4px;
     font-size: 14px;
-    height: 43px; /* Set a specific height */
-    box-sizing: border-box; 
+    height: 40px;
+    box-sizing: border-box;
+    margin: 0;
+    line-height: normal;
+    display: block;
 }
 
 .search-bar::placeholder {
-    color: #08203E; 
+    color: #08203E;
     opacity: 1;
 }
 
-
 .search-button {
     background-color: #08203E;
-    border: none;
     color: white;
-    padding: 10px 15px; 
-    margin-left: 8px;
+    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    border: 1px solid #08203E; 
-    display: flex;
-    align-items: center;
-    height: 40px; 
+    border: 1px solid #08203E;
+    height: 40px;
+    margin: 0;
+    line-height: normal;
+    white-space: nowrap;
 }
 
+
 .search-button .material-icons {
-    font-size: 15px;
+    font-size: 14px;
     margin-right: 4px;
 }
 
