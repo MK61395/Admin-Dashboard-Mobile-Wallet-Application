@@ -75,6 +75,8 @@ function ProjectDashboard() {
         console.log("API Response:", response.data.message || response.data);
         if (!editMode) {
           setProjects([...projects, formData]);
+          window.location.reload(); //refresh the page after adding a new project
+          //imp to show the new project in the table
         }
         setEditMode(false);
         setFormData({
